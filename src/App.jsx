@@ -17,6 +17,7 @@ function App() {
   let minute = Math.floor(differenceInMinutes(deadline, date) % 60)
   let second = Math.floor(differenceInSeconds(deadline, date) % 60)
 
+
   const getTime = (value) => {
     if (value < 10) return `0${value}`
     return value
@@ -24,8 +25,14 @@ function App() {
 
   const submit = (e) => {
     if (e.key === 'Enter') {
+      if (e.target.value.length === 4) {
+        e.target.value = e.target.value + '-01-01T00:00'
+      } else if (e.target.value.length === 7) {
+        e.target.value = e.target.value + '-01T00:00'
+      } else if (e.target.value.length === 10) {
+        e.target.value = e.target.value + 'T00:00'
+      }
       setDeadline(new Date(e.target.value))
-      console.log(deadline)
     }
   }
 
@@ -38,9 +45,7 @@ function App() {
       <div className="settimer">
         <div className="title">SET TIMER</div>
         Year-Month-DayThh:mm:ss <br />
-        Example 1 : 2030-04-24T20:30 <br />
-        Example 2 : 2030-04-24 <br />
-        Example 3 : 2030 <br />
+        Example : 2030-04-24T20:30 <br />
         <input type="text" onKeyPress={submit} /> <br />
         Then press Enter
       </div>
