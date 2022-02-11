@@ -17,14 +17,49 @@ function App() {
   let minute = Math.floor(differenceInMinutes(deadline, date) % 60)
   let second = Math.floor(differenceInSeconds(deadline, date) % 60)
 
+  const badMonths = [2, 4, 6, 7, 9, 11]
 
-  const getTime = (value) => {
+  const transform = (value) => {
     if (value < 10) return `0${value}`
     return value
   }
 
-  const submit = (e) => {
+  const takeDate = (e) => {
     if (e.key === 'Enter') {
+
+      // 31 day problem
+
+      const year = +e.target.value.split('-')[0]
+      const month = +e.target.value.split('-')[1]
+      const day = +e.target.value.split('-')[2]
+
+      badMonths.forEach((item) => {
+        if (item === month) {
+          if ((year - 2024) % 4 === 0) {
+            if (month === 2) {
+              if (day === 30) {
+                alert('Write correctly, February 30-31 not match')
+                e.target.value = null
+              }
+            }
+          } else {
+            if (month === 2) {
+              if (day === 29 || day === 30) {
+                alert('Write correctly, February 29-31 not match')
+                e.target.value = null
+              }
+            }
+          }
+
+          if (day === 31) {
+            alert('Write correctly, 31 not match')
+            e.target.value = null
+          }
+        }
+      })
+
+      //Because GMT+03:00 => 2023 = 2023-01-01 03:00
+
       if (e.target.value.length === 4) {
         e.target.value = e.target.value + '-01-01T00:00'
       } else if (e.target.value.length === 7) {
@@ -46,7 +81,10 @@ function App() {
         <div className="title">SET TIMER</div>
         Year-Month-DayThh:mm:ss <br />
         Example : 2030-04-24T20:30 <br />
-        <input type="text" onKeyPress={submit} /> <br />
+        Example : 2030-04-24<br />
+        Example : 2030-04<br />
+        Example : 2030 <br />
+        <input type="text" onKeyPress={takeDate} /> <br />
         Then press Enter
       </div>
     </div>
@@ -57,13 +95,13 @@ function App() {
         <div className="app">
           <div className="title">Timer CountDown</div>
           <div className="timer">
-            <div className="timerItem">{getTime(day)}</div>
+            <div className="timerItem">{transform(day)}</div>
             <div className="timerItem">:</div>
-            <div className="timerItem">{getTime(hour)}</div>
+            <div className="timerItem">{transform(hour)}</div>
             <div className="timerItem">:</div>
-            <div className="timerItem">{getTime(minute)}</div>
+            <div className="timerItem">{transform(minute)}</div>
             <div className="timerItem">:</div>
-            <div className="timerItem">{getTime(second)}</div>
+            <div className="timerItem">{transform(second)}</div>
           </div>
         </div>
         <button onClick={resetTime}>Reset!</button>
